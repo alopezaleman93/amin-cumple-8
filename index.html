@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Amín cumple 8</title>
+<meta name="description" content="Confirmación de asistencia al cumpleaños de Amín.">
+<style>
+:root{--gold:#f4d78a;--gold2:#c8a54b;--dark:#050b08}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#050b08;color:#fff;font-family:Arial,Helvetica,sans-serif}
+.hero{min-height:100svh;display:flex;align-items:center;position:relative;overflow:hidden;background:#07110c url("assets/fondo-amin-8.png") center/cover no-repeat}
+.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.72),rgba(0,0,0,.22) 55%,rgba(0,0,0,.48)),linear-gradient(0deg,rgba(0,0,0,.78),transparent 55%,rgba(0,0,0,.18))}
+.wrap{width:min(1180px,92%);margin:auto;position:relative;z-index:2}
+.card{width:min(500px,100%);padding:32px;border-radius:24px;border:1px solid rgba(244,215,138,.36);background:rgba(5,12,8,.82);backdrop-filter:blur(9px);box-shadow:0 25px 80px rgba(0,0,0,.5)}
+.kicker{text-transform:uppercase;letter-spacing:4px;font-size:12px;font-weight:800;color:var(--gold)}
+h1{font-size:clamp(58px,8vw,88px);line-height:.82;margin:12px 0 8px;text-transform:uppercase;letter-spacing:2px;text-shadow:0 5px 20px #000}
+.subtitle{text-transform:uppercase;font-size:22px;letter-spacing:4px;font-weight:800}
+.subtitle b{color:var(--gold);font-size:36px}
+.intro{color:#ddd;line-height:1.5;margin:20px 0 24px}
+form{display:grid;gap:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:#ddd}
+input[type=text]{width:100%;margin-top:7px;padding:14px;border:1px solid rgba(255,255,255,.22);border-radius:11px;background:rgba(0,0,0,.4);color:#fff;font-size:16px;outline:0}
+input[type=text]:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(244,215,138,.1)}
+.question{font-weight:800;margin-top:4px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choices input{display:none}
+.choices label{cursor:pointer;text-align:center;padding:15px 10px;border-radius:11px;border:1px solid rgba(255,255,255,.22);background:rgba(0,0,0,.35);font-size:13px;font-weight:800;transition:.2s}
+.choices input:checked+label{background:var(--gold);color:#111;border-color:var(--gold)}
+button{padding:16px;border:0;border-radius:12px;background:linear-gradient(135deg,#f5dd98,#c8a54b);font-size:15px;font-weight:900;cursor:pointer;color:#111}
+button:disabled{opacity:.65;cursor:wait}
+.note{text-align:center;color:#aaa;font-size:11px;margin:0}
+.success{text-align:center;display:none;padding:15px 0}.success .ok{font-size:55px;color:var(--gold)}.success h2{margin:6px 0 8px;font-size:30px}.success p{color:#ddd}
+.error{display:none;padding:10px;border-radius:9px;background:rgba(180,40,40,.2);color:#ffb0b0;font-size:13px}
+@media(max-width:800px){.hero{background-position:62% center;align-items:flex-end;padding:25px 0}.wrap{width:94%}.card{padding:25px 19px;background:rgba(5,12,8,.9)}.hero:before{background:linear-gradient(0deg,rgba(0,0,0,.92),rgba(0,0,0,.2) 65%,rgba(0,0,0,.4))}}
+@media(max-width:430px){.row{grid-template-columns:1fr}h1{font-size:58px}}
+</style>
+</head>
+<body>
+<section class="hero">
+<div class="wrap">
+<div class="card">
+<div id="formView">
+<div class="kicker">Una aventura jurásica te espera</div>
+<h1>Amín</h1>
+<div class="subtitle">Cumple <b>8</b></div>
+<p class="intro">Estamos preparando una aventura muy especial. Queremos saber si vas a acompañarnos.</p>
+
+<form id="rsvp">
+<div class="row">
+<div><label for="nombre">Nombre</label><input id="nombre" name="nombre" type="text" maxlength="60" required></div>
+<div><label for="apellido">Apellido</label><input id="apellido" name="apellido" type="text" maxlength="60" required></div>
+</div>
+
+<div class="question">¿Voy a asistir al cumpleaños?</div>
+<div class="choices">
+<input id="si" name="asistencia" type="radio" value="SI" required><label for="si">Sí, voy a asistir</label>
+<input id="no" name="asistencia" type="radio" value="NO"><label for="no">No voy a poder</label>
+</div>
+
+<div id="error" class="error"></div>
+<button id="submit" type="submit">CONFIRMAR RESPUESTA</button>
+<p class="note">La respuesta se registra para organizar el cumpleaños.</p>
+</form>
+</div>
+
+<div id="success" class="success">
+<div class="ok">✓</div>
+<h2>¡Respuesta registrada!</h2>
+<p>Gracias por confirmar. Nos vemos en la aventura de Amín.</p>
+</div>
+</div>
+</div>
+</section>
+
+<script>
+/*
+  PEGÁ AQUÍ la URL de tu Google Apps Script Web App.
+  Ejemplo:
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/XXXXXXXX/exec";
+*/
+const GOOGLE_SCRIPT_URL = "";
+
+const form=document.getElementById("rsvp");
+const errorBox=document.getElementById("error");
+const btn=document.getElementById("submit");
+
+form.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  errorBox.style.display="none";
+
+  if(!GOOGLE_SCRIPT_URL){
+    errorBox.textContent="Falta configurar la conexión con Google Sheets. Seguí los pasos del README.";
+    errorBox.style.display="block";
+    return;
+  }
+
+  btn.disabled=true;
+  btn.textContent="GUARDANDO...";
+
+  try{
+    const data=new URLSearchParams(new FormData(form));
+    const response=await fetch(GOOGLE_SCRIPT_URL,{
+      method:"POST",
+      body:data,
+      mode:"no-cors"
+    });
+
+    document.getElementById("formView").style.display="none";
+    document.getElementById("success").style.display="block";
+  }catch(err){
+    errorBox.textContent="No pudimos registrar la respuesta. Revisá tu conexión e intentá nuevamente.";
+    errorBox.style.display="block";
+    btn.disabled=false;
+    btn.textContent="CONFIRMAR RESPUESTA";
+  }
+});
+</script>
+</body>
+</html>
